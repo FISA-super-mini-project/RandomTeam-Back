@@ -2,7 +2,6 @@ package com.example.team_generator.entity;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 
@@ -20,21 +19,15 @@ public class Room {
     private String teamName; // 방 이름
 
     @Column(nullable = false)
-    private int totalMembers; // 전체 인원 수
+    private int teamSize; // 팀 크기 (DB에 저장됨)
 
-    @Column(nullable = false)
-    private int teamSize; // 팀 크기
+    @Column(columnDefinition = "TEXT")
+    private String members; // 랜덤 순서로 배치된 문자열 (예: "철수,영희,민수")
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "room_members", joinColumns = @JoinColumn(name = "room_id"))
-    @Column(name = "member_name")
-    private List<String> members = new ArrayList<>();
-
-    public Room(String teamName, int totalMembers, int teamSize) {
+    public Room(String teamName, int teamSize) {
         this.teamName = teamName;
-        this.totalMembers = totalMembers;
         this.teamSize = teamSize;
-        this.members = new ArrayList<>(Collections.nCopies(totalMembers, "")); // "" 초기화
+        this.members = ""; // 초기엔 빈 문자열
     }
 
     // Getter
@@ -46,19 +39,19 @@ public class Room {
         return teamName;
     }
 
-    public int getTotalMembers() {
-        return totalMembers;
-    }
-
     public int getTeamSize() {
         return teamSize;
     }
 
-    public List<String> getMembers() {
+    public String getMembers() {
         return members;
     }
 
-    public void updateMembers(List<String> members) {
-        this.members = members;
+    /**
+     * 랜덤 순서로 섞은 후 문자열로 저장
+     */
+    public void updateMembers(List<String> memberList) {
+        Collections.shuffle(memberList);
+        this.members = String.join(",", memberList);
     }
 }
