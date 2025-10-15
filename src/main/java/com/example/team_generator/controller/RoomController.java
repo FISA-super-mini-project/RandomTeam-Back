@@ -1,5 +1,6 @@
 package com.example.team_generator.controller;
 
+import com.example.team_generator.dto.RandomAssignRequest;
 import com.example.team_generator.dto.RoomCreateRequest;
 import com.example.team_generator.dto.RoomResponse;
 import com.example.team_generator.service.RoomService;
@@ -33,5 +34,14 @@ public class RoomController {
         return ResponseEntity.ok(response);
     }
 
+    // 랜덤 배치
+    @PostMapping("/random")
+    public ResponseEntity<Map<String, String>> randomAssign(
+            @RequestParam UUID roomId,
+            @RequestBody RandomAssignRequest request
+    ) {
+        String randomized = roomService.randomAssign(roomId, request.getMembers());
+        return ResponseEntity.ok(Map.of("members", randomized));
+    }
 }
 
