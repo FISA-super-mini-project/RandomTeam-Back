@@ -1,11 +1,13 @@
 package com.example.team_generator.service;
 
 import com.example.team_generator.dto.RoomCreateRequest;
+import com.example.team_generator.dto.RoomResponse;
 import com.example.team_generator.entity.Room;
 import com.example.team_generator.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -23,4 +25,16 @@ public class RoomService {
         return room.getRoomId();
     }
 
+    // 방 조회
+    public RoomResponse getRoom(UUID roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NoSuchElementException("해당 roomId를 찾을 수 없습니다."));
+
+        return new RoomResponse(
+                room.getRoomId(),
+                room.getTeamName(),
+                room.getTeamSize(),
+                room.getMembers()
+        );
+    }
 }

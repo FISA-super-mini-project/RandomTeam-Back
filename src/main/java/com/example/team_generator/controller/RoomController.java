@@ -28,6 +28,12 @@ public class RoomController {
         return ResponseEntity.ok(Map.of("roomId", roomId.toString()));
     }
 
+    // 방 조회
+    @GetMapping
+    public ResponseEntity<RoomResponse> getRoom(@RequestParam UUID id) {
+        RoomResponse response = roomService.getRoom(id);
+        return ResponseEntity.ok(response);
+    }
 
 }
 
